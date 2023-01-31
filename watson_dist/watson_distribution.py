@@ -119,17 +119,14 @@ class DimrothWatson(rv_continuous):
         # deal with the edge cases
         epsilon = 1e-5
         edge_mask = (p >= 1.0/epsilon) | (p == 0.0)
-        #edge_mask = (p >= 1.0/epsilon)
         p[edge_mask] = 0.0
 
         # large negative k (bipolar)
         bipolar = (x >= (1.0 - epsilon)) | (x <= (-1.0 + epsilon))
-        #p[bipolar & edge_mask & (k>1)] = 1.0/(2.0*epsilon)
         p[bipolar & edge_mask & (k < -1)] = 1.0/(2.0*epsilon)
 
         # large positive k (girdle)
         girdle = (x >= (0.0 - epsilon)) & (x <= (0.0 + epsilon))
-        #p[girdle & edge_mask & (k <- 1)] = 1.0/(2.0*epsilon)
         p[girdle & edge_mask & (k > 1)] = 1.0/(2.0*epsilon)
 
         return p
@@ -185,8 +182,6 @@ class DimrothWatson(rv_continuous):
             x = np.exp(k)
             inf_mask = np.array([False]*size)
         edge_mask = ((x == np.inf) | (x == 0.0))
-        #result[edge_mask & (k>0)] = np.random.choice([1,-1], size=np.sum(edge_mask & (k>0)))
-        #result[edge_mask & (k<0)] = 0.0
         result[edge_mask & (k<0)] = np.random.choice([1,-1], size=np.sum(edge_mask & (k<0)))
         result[edge_mask & (k>0)] = 0.0
 
